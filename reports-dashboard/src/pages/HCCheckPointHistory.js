@@ -74,7 +74,7 @@ const HCCheckpointHistory = () => {
   ];
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh' ,maxWidth:'41%' }}>
+    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh' ,maxWidth:'71vw' }}>
       <Space direction="vertical" size="large" style={{ width: '100%', maxWidth: '900px', margin: '0 auto' }}>
         {/* Mould Name Dropdown, Instance No, and Month all on one line */}
         <Row gutter={16}>

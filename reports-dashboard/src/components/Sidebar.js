@@ -3,20 +3,18 @@ import React from "react";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
 import { HomeOutlined, FileSearchOutlined } from "@ant-design/icons";
+import logo from "../img/logo.jpeg"; // Import your logo here
 
 const { Sider } = Layout;
 
 const Sidebar = () => (
-  <Sider width={350} style={{ backgroundColor: "#00008b", height: "98vh", boxShadow: "4px 0px 20px rgba(0, 0, 0, 0.4)" }}>
-    <div style={{ padding: "20px", textAlign: "center", color: "#fff", fontWeight: "bold", fontSize: "18px" }}>
-      Dashboard
+  <Sider width={350} style={{ backgroundColor: "#00008b", height: "100vh", boxShadow: "4px 0px 20px rgba(0, 0, 0, 0.4)" }}>
+    <div style={{ padding: "10px",textAlign:"center" }}>
+      <img src={logo} alt="Logo" style={{ maxWidth: "60vw", height: "12vh" }} /> {/* Use the logo image */}
     </div>
     <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} style={{ backgroundColor: "#00008b", borderRight: 0 }}>
-      {/* <Menu.Item key="1" icon={<HomeOutlined />} style={{ fontSize: "16px" }}>
-        <Link to="/">Home</Link>
-      </Menu.Item> */}
-      <Menu.Item key="1" icon={<HomeOutlined />}  style={{ fontSize: "16px" }}>
-        <Link to="/report">Report</Link>
+      <Menu.Item key="1" icon={<HomeOutlined />} style={{ fontSize: "16px" }}>
+        <Link to="/">Report</Link>
       </Menu.Item>
       <Menu.Item key="2" icon={<FileSearchOutlined />} style={{ fontSize: "16px" }}>
         <Link to="/pmreport">Preventive Maintenance Summary Report</Link>

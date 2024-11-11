@@ -9,7 +9,9 @@ const Report = () => {
   
 
   return (
-    <div>Report.....</div>
+    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh' ,maxWidth:'71vw'}}>
+      Report........
+      </div>
   );
 };
 
