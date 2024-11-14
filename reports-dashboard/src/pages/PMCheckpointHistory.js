@@ -133,7 +133,7 @@ const PMCheckpointHistory = () => {
           Generate Report
         </Button> */}
 
-<Row gutter={16} justify="end" style={{ marginTop: '3px' }}>
+<Row gutter={16} justify="end" style={{ marginTop: '-15px' }}>
           <Col>
             <Button
               type="primary"
@@ -147,7 +147,7 @@ const PMCheckpointHistory = () => {
       </Space>
 
       {/* Report Data Table */}
-      <div style={{ marginTop: '24px',maxWidth:'100%' }}>
+      <div style={{ marginTop: '12px',maxWidth:'100%' }}>
         <Table
           columns={columns}
           dataSource={reportData}

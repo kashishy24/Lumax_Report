@@ -71,7 +71,7 @@ const HCReport = () => {
           <Col xs={24} sm={12} md={8}>
             <label style={{ fontWeight: 'bold' }}>Start Date</label>
             <DatePicker
-              showTime
+             // showTime
               format="YYYY-MM-DD HH:mm:ss"
               onChange={(date) => setStartDate(date)}
               value={startDate}
@@ -81,7 +81,7 @@ const HCReport = () => {
           <Col xs={24} sm={12} md={8}>
             <label style={{ fontWeight: 'bold' }}>End Date</label>
             <DatePicker
-              showTime
+             // showTime
               format="YYYY-MM-DD HH:mm:ss"
               onChange={(date) => setEndDate(date)}
               value={endDate}
@@ -95,7 +95,7 @@ const HCReport = () => {
           Generate Report
         </Button> */}
 
-<Row gutter={16} justify="end" style={{ marginTop: '3px' }}>
+<Row gutter={16} justify="end" style={{ marginTop: '-15px' }}>
           <Col>
             <Button
               type="primary"
@@ -109,7 +109,7 @@ const HCReport = () => {
       </Space>
 
       {/* Report Data Table */}
-      <div style={{ marginTop: '24px', maxWidth: '100%' }}>
+      <div style={{ marginTop: '12px', maxWidth: '100%' }}>
         <Table
           columns={columns}
           dataSource={reportData}

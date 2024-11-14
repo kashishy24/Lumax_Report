@@ -130,7 +130,7 @@ const HCCheckpointHistory = () => {
           Generate Report
         </Button> */}
 
-<Row gutter={16} justify="end" style={{ marginTop: '3px' }}>
+<Row gutter={16} justify="end" style={{ marginTop: '-15px' }}>
           <Col>
             <Button
               type="primary"
@@ -144,7 +144,7 @@ const HCCheckpointHistory = () => {
       </Space>
 
       {/* Report Data Table */}
-      <div style={{ marginTop: '24px', maxWidth: '100%' }}>
+      <div style={{ marginTop: '12px', maxWidth: '100%' }}>
         <Table
           columns={columns}
           dataSource={reportData}
@@ -159,8 +159,10 @@ const HCCheckpointHistory = () => {
               <strong>Health Check CheckPoint History</strong>
             </div>
           )}
+         
         />
       </div>
+      
     </div>
   );
 };

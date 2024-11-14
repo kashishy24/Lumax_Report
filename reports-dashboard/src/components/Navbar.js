@@ -13,15 +13,7 @@ const Navbar = () => (
         Mould Maintenance Reports
       </Title>
 
-      {/* Navigation Menu */}
-      {/* <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
-        <Menu.Item key="1">
-          <Link to="/">Home</Link>
-        </Menu.Item>
-        <Menu.Item key="2">
-          <Link to="/report">Report</Link>
-        </Menu.Item>
-      </Menu> */}
+      
     </div>
   </Header>
 );
