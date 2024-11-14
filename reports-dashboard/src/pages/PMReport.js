@@ -94,7 +94,7 @@ const PMReport = () => {
       </Row>
 
       {/* Report Data Table */}
-      <div style={{ marginTop: '12px', maxWidth: '100%' }}>
+      <div style={{ marginTop: '12px', maxWidth: '100%' ,}}>
         <Table
           columns={columns}
           dataSource={reportData}
@@ -102,7 +102,7 @@ const PMReport = () => {
           pagination={{ pageSize: 10 }}
           bordered
           style={{ backgroundColor: '#fff' }}
-          scroll={{ x: 1500, y: 181 }}
+          scroll={{ x: 1500, y: 300 }}
           rowClassName={() => 'custom-row-height'}
           title={() => (
             <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'center' }}>

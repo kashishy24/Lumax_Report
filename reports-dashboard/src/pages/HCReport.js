@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, Select, DatePicker, Button, Table, message, Space, Row, Col } from 'antd';
+import { Select, DatePicker, Button, Table, message, Row, Col } from 'antd';
 
-const { Title } = Typography;
 const { Option } = Select;
 
 const HCReport = () => {
-  const [mouldNameOptions, setMouldNameOptions] = useState([]); // Store mould names
-  const [mouldName, setMouldName] = useState(''); // Store selected mould name
-  const [startDate, setStartDate] = useState(null); // Store start date
-  const [endDate, setEndDate] = useState(null); // Store end date
-  const [reportData, setReportData] = useState([]); // Store report data
+  const [mouldNameOptions, setMouldNameOptions] = useState([]);
+  const [mouldName, setMouldName] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [reportData, setReportData] = useState([]);
 
   useEffect(() => {
-    // Fetch Mould Names from the backend API
     axios.get('http://localhost:5000/api/moulds')
-      .then((response) => setMouldNameOptions(response.data)) // Assuming response has mouldName in each item
-      .catch((error) => message.error('Error fetching mould names.'));
+      .then((response) => setMouldNameOptions(response.data))
+      .catch(() => message.error('Error fetching mould names.'));
   }, []);
 
   const handleGenerateReport = () => {
@@ -25,90 +23,74 @@ const HCReport = () => {
       return;
     }
 
-    // Fetch report data for Health Check Maintenance based on selected filters
     axios.post('http://localhost:5000/api/maintenance/hc', {
-      mouldName, // Pass mouldName in the API request
+      mouldName,
       startTime: startDate.format('YYYY-MM-DD'),
       endTime: endDate.format('YYYY-MM-DD'),
     })
       .then((response) => setReportData(response.data))
-      .catch((error) => message.error('Error fetching report data.'));
+      .catch(() => message.error('Error fetching report data.'));
   };
 
   const columns = [
-    { title: 'CheckList ID', dataIndex: 'CheckListID', key: 'CheckListID',onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })   },
-    { title: 'CheckList Name', dataIndex: 'CheckListName', key: 'CheckListName',onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })   },
-    { title: 'Mould Name', dataIndex: 'MouldName', key: 'MouldName',onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })   },
-    { title: 'User Name', dataIndex: 'UserName', key: 'UserName',onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })   },
-    { title: 'Status', dataIndex: 'HCStatus', key: 'Status' ,onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })  },
-    { title: 'Instance', dataIndex: 'Instance', key: 'Instance',onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })   },
-    { title: 'Remark', dataIndex: 'Remark', key: 'Remark' ,onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })  },
-    { title: 'Start Time', dataIndex: 'StartTime', key: 'StartTime' ,onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })  },
-    { title: 'End Time', dataIndex: 'EndTime', key: 'EndTime',onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })   },
-    { title: 'Duration', dataIndex: 'HCDuration', key: 'Duration',onHeaderCell: () => ({ style: { backgroundColor: '#f5f5f5' } })   },
+    { title: 'CheckList ID', dataIndex: 'CheckListID', key: 'CheckListID' },
+    { title: 'CheckList Name', dataIndex: 'CheckListName', key: 'CheckListName' },
+    { title: 'Mould Name', dataIndex: 'MouldName', key: 'MouldName' },
+    { title: 'User Name', dataIndex: 'UserName', key: 'UserName' },
+    { title: 'Status', dataIndex: 'HCStatus', key: 'Status' },
+    { title: 'Instance', dataIndex: 'Instance', key: 'Instance' },
+    { title: 'Remark', dataIndex: 'Remark', key: 'Remark' },
+    { title: 'Start Time', dataIndex: 'StartTime', key: 'StartTime' },
+    { title: 'End Time', dataIndex: 'EndTime', key: 'EndTime' },
+    { title: 'Duration', dataIndex: 'HCDuration', key: 'Duration' },
   ];
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#e0e2e5',minHeight: '84vh' ,maxWidth:'71vw'}}>
-      <Space direction="vertical" size="large" style={{ width: '100%', maxWidth: '900px', margin: '0 auto' }}>
-        {/* Mould Name Dropdown, Start Date, and End Date all on one line */}
-        <Row gutter={16}>
-          <Col xs={24} sm={12} md={8}>
-            <label style={{ fontWeight: 'bold' }}>Mould Name</label>
-            <Select
-              placeholder="Select Mould Name"
-              onChange={(value) => setMouldName(value)}
-              value={mouldName}
-              style={{ width: '100%' }}
-            >
-              {mouldNameOptions.map((option) => (
-                <Option key={option.MouldName} value={option.MouldName}>
-                  {option.MouldName}
-                </Option>
-              ))}
-            </Select>
-          </Col>
-          <Col xs={24} sm={12} md={8}>
-            <label style={{ fontWeight: 'bold' }}>Start Date</label>
-            <DatePicker
-             // showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              onChange={(date) => setStartDate(date)}
-              value={startDate}
-              style={{ width: '100%' }}
-            />
-          </Col>
-          <Col xs={24} sm={12} md={8}>
-            <label style={{ fontWeight: 'bold' }}>End Date</label>
-            <DatePicker
-             // showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              onChange={(date) => setEndDate(date)}
-              value={endDate}
-              style={{ width: '100%' }}
-            />
-          </Col>
-        </Row>
+    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh', maxWidth: '71vw' }}>
+      <Row justify="start" align="middle" style={{ marginBottom: '24px', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Mould Name</label>
+          <Select
+            placeholder="Select Mould Name"
+            onChange={(value) => setMouldName(value)}
+            value={mouldName}
+            style={{ width: '180px' }}
+          >
+            {mouldNameOptions.map((option) => (
+              <Option key={option.MouldName} value={option.MouldName}>
+                {option.MouldName}
+              </Option>
+            ))}
+          </Select>
+        </div>
+        
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Start Date</label>
+          <DatePicker
+            onChange={(date) => setStartDate(date)}
+            value={startDate}
+            style={{ width: '180px' }}
+          />
+        </div>
 
-        {/* Generate Report Button */}
-        {/* <Button type="primary" onClick={handleGenerateReport} block style={{ marginTop: '24px',backgroundColor: '#00008b'  }}>
-          Generate Report
-        </Button> */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>End Date</label>
+          <DatePicker
+            onChange={(date) => setEndDate(date)}
+            value={endDate}
+            style={{ width: '180px' }}
+          />
+        </div>
 
-<Row gutter={16} justify="end" style={{ marginTop: '-15px' }}>
-          <Col>
-            <Button
-              type="primary"
-              onClick={handleGenerateReport}
-              style={{ backgroundColor: '#00008b', padding: '5px 20px' }} // Smaller button style
-            >
-              Generate Report
-            </Button>
-          </Col>
-        </Row>
-      </Space>
+        <Button
+          type="primary"
+          onClick={handleGenerateReport}
+          style={{ backgroundColor: '#00008b', padding: '4px 12px', height: '32px', lineHeight: '1' }}
+        >
+          Generate
+        </Button>
+      </Row>
 
-      {/* Report Data Table */}
       <div style={{ marginTop: '12px', maxWidth: '100%' }}>
         <Table
           columns={columns}
@@ -116,15 +98,25 @@ const HCReport = () => {
           rowKey="CheckListID"
           pagination={{ pageSize: 10 }}
           bordered
-          style={{ backgroundColor: '#fff', maxHeight: '50%' }}
-          scroll={{ x: 1500,y:181 }} 
+          style={{ backgroundColor: '#fff' }}
+          scroll={{ x: 1500, y: 181 }}
+          rowClassName={() => 'custom-row-height'}
           title={() => (
-            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',textAlign:'center' }}>
-              <strong>Health Check CheckList </strong>
+            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'center' }}>
+              <strong>Health Check CheckList</strong>
             </div>
-          )}// En
+          )}
         />
       </div>
+
+      <style jsx>{`
+        .custom-row-height .ant-table-cell {
+          padding: 0px;
+          white-space: normal;
+          word-wrap: break-word;
+          vertical-align: top;
+        }
+      `}</style>
     </div>
   );
 };

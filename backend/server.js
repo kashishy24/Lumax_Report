@@ -11,9 +11,9 @@ app.use(express.json());
 
 // SQL Server Database Configuration
 const config = {
-    user: 'genesis1', // Replace with your SQL Server username
-    password: 'Gen@123', // Replace with your SQL Server password
-    server: 'DESKTOP-URBGBGQ', // Replace with your server address (e.g., localhost or IP address)
+    user: 'sa', // Replace with your SQL Server username
+    password: 'root', // Replace with your SQL Server password
+    server: 'DESKTOP-2VNVT1T\\SQLEXPRESS', // Replace with your server address (e.g., localhost or IP address)
     database: 'PPMS', // Replace with your database name
     options: {
         encrypt: true, // For Azure SQL or use false for local SQL Server
