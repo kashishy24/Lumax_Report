@@ -1,21 +1,43 @@
-// src/components/Navbar.js
-import React from "react";
-import { Layout, Menu, Typography } from "antd";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 
-const { Header } = Layout;
-const { Title } = Typography;
+const Navbar = () => {
+    const location = useLocation();
+    const [title, setTitle] = useState("");
 
-const Navbar = () => (
-  <Header style={{ backgroundColor: "#00008b", padding: "0 20px" ,maxWidth:'158vh'}}>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      <Title level={3} style={{ color: "#fff", margin: 0 ,paddingTop:"13px"}}>
-        Mould Maintenance Reports
-      </Title>
+    useEffect(() => {
+        // Update title based on the current route
+        switch (location.pathname) {
+            case "/pmreport":
+                setTitle("Preventive Maintenance Summary Report");
+                break;
+            case "/hcreport":
+                setTitle("Health Check Maintenance Summary Report");
+                break;
+            case "/pmCheckpointHistory":
+                setTitle("Preventive Maintenance Report");
+                break;
+            case "/hcCheckpointHistory":
+                setTitle("Health Check Maintenance Report");
+                break;
+            default:
+                setTitle("Mould Maintenance");
+        }
+    }, [location.pathname]); // Runs when location.pathname changes
 
-      
-    </div>
-  </Header>
-);
+    return (
+        <AppBar position="static" sx={{
+          backgroundColor: "#00008b", // Use sx for custom styles
+          color: "#ffffff", // Set the text color to white for visibility
+      }}>
+            <Toolbar>
+                <Typography variant="h6" component="div">
+                    {title} {/* Display the dynamic title */}
+                </Typography>
+            </Toolbar>
+        </AppBar>
+    );
+};
 
 export default Navbar;

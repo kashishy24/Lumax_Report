@@ -1,4 +1,4 @@
-// src/components/DashboardLayout.js
+import React from "react";
 import { Box, CssBaseline } from "@mui/material";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
@@ -14,12 +14,12 @@ const DashboardLayout = ({ children }) => (
         <CssBaseline />
         <Sidebar />
         <Box flexGrow={1} display="flex" flexDirection="column" height="100vh">
-            <Navbar />
+            <Navbar /> {/* Navbar automatically updates the title */}
             <Box 
                 padding={3} 
                 flexGrow={1} 
                 height="100%" 
-                overflow="hidden" // Remove vertical scroll
+                overflow="auto"
             >
                 {children}
             </Box>

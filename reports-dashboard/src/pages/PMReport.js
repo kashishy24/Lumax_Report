@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, DatePicker, Button, Table, message, Row, Col } from 'antd';
+import { Select, DatePicker, Button, message, Row } from 'antd';
 
 const { Option } = Select;
 
@@ -34,23 +34,10 @@ const PMReport = () => {
       .catch(() => message.error('Error fetching report data.'));
   };
 
-  const columns = [
-    { title: 'CheckList ID', dataIndex: 'CheckListID', key: 'CheckListID' },
-    { title: 'CheckList Name', dataIndex: 'CheckListName', key: 'CheckListName' },
-    { title: 'Mould Name', dataIndex: 'MouldName', key: 'MouldName' },
-    { title: 'User Name', dataIndex: 'UserName', key: 'UserName' },
-    { title: 'Status', dataIndex: 'PMStatus', key: 'Status' },
-    { title: 'Instance', dataIndex: 'Instance', key: 'Instance' },
-    { title: 'Remark', dataIndex: 'Remark', key: 'Remark' },
-    { title: 'Start Time', dataIndex: 'StartTime', key: 'StartTime' },
-    { title: 'End Time', dataIndex: 'EndTime', key: 'EndTime' },
-    { title: 'Duration', dataIndex: 'PMDuration', key: 'Duration' },
-  ];
-
   return (
-    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh', maxWidth: '71vw' }}>
-      <Row justify="start" align="middle" style={{ marginBottom: '24px', gap: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '89.5vh', maxWidth: '73vw', marginTop: '-15px', marginLeft: '-15px' }}>
+      <Row justify="start" align="middle" style={{ marginBottom: '16px', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center'}}>
           <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Mould Name</label>
           <Select
             placeholder="Select Mould Name"
@@ -93,35 +80,82 @@ const PMReport = () => {
         </Button>
       </Row>
 
-      {/* Report Data Table */}
-      <div style={{ marginTop: '12px', maxWidth: '100%' ,}}>
-        <Table
-          columns={columns}
-          dataSource={reportData}
-          rowKey="CheckListID"
-          pagination={{ pageSize: 10 }}
-          bordered
-          style={{ backgroundColor: '#fff' }}
-          scroll={{ x: 1500, y: 300 }}
-          rowClassName={() => 'custom-row-height'}
-          title={() => (
-            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'center' }}>
-              <strong>Preventive Maintenance CheckList</strong>
-            </div>
-          )}
-        />
-      </div>
+      {/* Report Data Table with scrollable container */}
+      <div style={{ marginTop: '12px', maxWidth: '100%', maxHeight: '450px', overflowY: 'auto', border: '1px solid #ddd' }}>
+  <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff' }}>
+    <thead>
+      <tr style={{ backgroundColor: '#f5f5f5', textAlign: 'left' }}>
+        <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckList ID</th>
+        <th style={{ ...tableHeaderStyle, width: '150px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckList Name</th>
+        <th style={{ ...tableHeaderStyle, width: '120px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Mould Name</th>
+        <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>User Name</th>
+        <th style={{ ...tableHeaderStyle, width: '80px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Status</th>
+        <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Instance</th>
+        <th style={{ ...tableHeaderStyle, width: '200px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Remark</th>
+        <th style={{ ...tableHeaderStyle, width: '150px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Start Time</th>
+        <th style={{ ...tableHeaderStyle, width: '150px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>End Time</th>
+        <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      {reportData.map((row) => (
+        <tr key={row.CheckListID} style={rowStyle}>
+          <td style={cellStyle}>{row.CheckListID}</td>
+          <td style={cellStyle}>{row.CheckListName}</td>
+          <td style={cellStyle}>{row.MouldName}</td>
+          <td style={cellStyle}>{row.UserName}</td>
+          <td style={cellStyle}>{row.PMStatus}</td>
+          <td style={cellStyle}>{row.Instance}</td>
+          <td style={cellStyle}>{row.Remark}</td>
+          <td style={cellStyle}>{row.StartTime}</td>
+          <td style={cellStyle}>{row.EndTime}</td>
+          <td style={cellStyle}>{row.PMDuration}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
       <style jsx>{`
-        .custom-row-height .ant-table-cell {
-          padding: 0px;
-          white-space: normal;
-          word-wrap: break-word;
-          vertical-align: top;
+        th, td {
+          padding: 10px;
+          text-align: center;
+          border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+          background-color: #f9f9f9;
         }
       `}</style>
     </div>
   );
+};
+
+
+const tableHeaderStyle = {
+  fontWeight: 'bold',
+  fontSize: '12px',
+  padding: '12px',
+  textAlign: 'center',
+  borderBottom: '2px solid #ddd',
+  whiteSpace: 'nowrap', // Prevent wrapping
+  textOverflow: 'ellipsis', // Add ellipsis if the text overflows
+  overflow: 'hidden', // Hide overflowing text
+};
+
+const cellStyle = {
+  padding: '8px',
+  fontSize: '12px',
+  textAlign: 'center',
+  border: '1px solid #ddd',
+  maxHeight: '30px', // Define max height for each row
+  overflow: 'hidden',
+  whiteSpace: 'normal',
+  wordWrap: 'break-word',
+};
+
+const rowStyle = {
+  height: '40px', // Fixed row height
+  borderBottom: '1px solid #ddd',
 };
 
 export default PMReport;

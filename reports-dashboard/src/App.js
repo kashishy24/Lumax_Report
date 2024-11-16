@@ -11,6 +11,7 @@ const App = () => (
         <DashboardLayout>
             <Routes>
                 {/* <Route path="/" element={<Dashboard />} /> */}
+                
                 <Route path="/" element={<Report />} />
                 <Route path="/pmreport" element={<PMReport />} />
                 <Route path="/hcreport" element={<HCReport />} />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, Button, Table, message, Row, Col } from 'antd';
+import { Select, Button, message, Row } from 'antd';
 
 const { Option } = Select;
 
@@ -42,31 +42,9 @@ const PMCheckpointHistory = () => {
       .catch(() => message.error('Error fetching report data.'));
   };
 
-  const columns = [
-    { title: 'CheckListName', dataIndex: 'CheckListName', key: 'CheckListName', ellipsis: true, width: 140 },
-    { title: 'CheckPointID', dataIndex: 'CheckPointID', key: 'CheckPointID', ellipsis: true, width: 130 },
-    { title: 'CheckPointName', dataIndex: 'CheckPointName', key: 'CheckPointName', ellipsis: true, width: 150 },
-    { title: 'CheckArea', dataIndex: 'CheckArea', key: 'CheckArea', ellipsis: true, width: 110 },
-    { title: 'CheckPointItems', dataIndex: 'CheckPointItems', key: 'CheckPointItems', ellipsis: true, width: 150 },
-    { title: 'CheckPointArea', dataIndex: 'CheckPointArea', key: 'CheckPointArea', ellipsis: true, width: 150 },
-    { title: 'CheckingMethod', dataIndex: 'CheckingMethod', key: 'CheckingMethod', ellipsis: true, width: 150 },
-    { title: 'JudgementCriteria', dataIndex: 'JudgementCriteria', key: 'JudgementCriteria', ellipsis: true, width: 160 },
-    { title: 'CheckListType', dataIndex: 'CheckListType', key: 'CheckListType', ellipsis: true, width: 150 },
-    { title: 'CheckPointType', dataIndex: 'CheckPointType', key: 'CheckPointType', ellipsis: true, width: 150 },
-    { title: 'UOM', dataIndex: 'UOM', key: 'UOM', ellipsis: true, width: 70 },
-    { title: 'UpperLimit', dataIndex: 'UpperLimit', key: 'UpperLimit', ellipsis: true, width: 130 },
-    { title: 'LowerLimit', dataIndex: 'LowerLimit', key: 'LowerLimit', ellipsis: true, width: 130 },
-    { title: 'Standard', dataIndex: 'Standard', key: 'Standard', ellipsis: true, width: 140 },
-    { title: 'CheckPointValue', dataIndex: 'CheckPointValue', key: 'CheckPointValue', ellipsis: true, width: 160 },
-    { title: 'OKNOK', dataIndex: 'OKNOK', key: 'OKNOK', ellipsis: true, width: 90 },
-    { title: 'Observation', dataIndex: 'Observation', key: 'Observation', ellipsis: true, width: 130 },
-    { title: 'Instance', dataIndex: 'Instance', key: 'Instance', ellipsis: true, width: 100 },
-    { title: 'Timestamp', dataIndex: 'Timestamp', key: 'Timestamp', ellipsis: true, width: 130 },
-  ];
-
   return (
-    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh', maxWidth: '71vw' }}>
-      <Row gutter={16} justify="start" style={{ marginBottom: '24px', gap: '16px' }}>
+    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh', maxWidth: '73vw' ,marginTop: '-15px', marginLeft: '-15px'}}>
+      <Row gutter={16} justify="start" style={{ marginBottom: '16px', gap: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Mould Name</label>
           <Select
@@ -117,38 +95,102 @@ const PMCheckpointHistory = () => {
           onClick={handleGenerateReport}
           style={{ backgroundColor: '#00008b', padding: '4px 12px', height: '32px', lineHeight: '1' }}
         >
-          Generate Report
+          Generate
         </Button>
       </Row>
 
-      <div style={{ marginTop: '12px', maxWidth: '100%' }}>
-        <Table
-          columns={columns}
-          dataSource={reportData}
-          rowKey="UID"
-          pagination={{ pageSize: 10 }}
-          bordered
-          style={{ backgroundColor: '#fff' }}
-          scroll={{ x: 1500, y: 181 }}
-          rowClassName={() => 'custom-row-height'}
-          title={() => (
-            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'center' }}>
-              <strong>Preventive Maintenance CheckPoint History</strong>
-            </div>
-          )}
-        />
+      <div style={{ marginTop: '12px', maxWidth: '100%', maxHeight: '450px', overflowY: 'auto', border: '1px solid #ddd' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f5f5f5', textAlign: 'left' }}>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckListName</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointID</th>
+              <th style={{ ...tableHeaderStyle, width: '120px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointName</th>
+              <th style={{ ...tableHeaderStyle, width: '80px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckArea</th>
+              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointItems</th>
+              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointArea</th>
+              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckingMethod</th>
+              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>JudgementCriteria</th>
+              <th style={{ ...tableHeaderStyle, width: '110px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckListType</th>
+              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointType</th>
+              <th style={{ ...tableHeaderStyle, width: '70px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>UOM</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>UpperLimit</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>LowerLimit</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Standard</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointValue</th>
+              <th style={{ ...tableHeaderStyle, width: '70px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>OKNOK</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Observation</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Instance</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reportData.map((row, index) => (
+              <tr key={index} style={rowStyle}>
+                <td style={cellStyle}>{row.CheckListName}</td>
+                <td style={cellStyle}>{row.CheckPointID}</td>
+                <td style={cellStyle}>{row.CheckPointName}</td>
+                <td style={cellStyle}>{row.CheckArea}</td>
+                <td style={cellStyle}>{row.CheckPointItems}</td>
+                <td style={cellStyle}>{row.CheckPointArea}</td>
+                <td style={cellStyle}>{row.CheckingMethod}</td>
+                <td style={cellStyle}>{row.JudgementCriteria}</td>
+                <td style={cellStyle}>{row.CheckListType}</td>
+                <td style={cellStyle}>{row.CheckPointType}</td>
+                <td style={cellStyle}>{row.UOM}</td>
+                <td style={cellStyle}>{row.UpperLimit}</td>
+                <td style={cellStyle}>{row.LowerLimit}</td>
+                <td style={cellStyle}>{row.Standard}</td>
+                <td style={cellStyle}>{row.CheckPointValue}</td>
+                <td style={cellStyle}>{row.OKNOK}</td>
+                <td style={cellStyle}>{row.Observation}</td>
+                <td style={cellStyle}>{row.Instance}</td>
+                <td style={cellStyle}>{row.Timestamp}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-
+      
       <style jsx>{`
-        .custom-row-height .ant-table-cell {
-          padding: 0px;
-          white-space: normal;
-          word-wrap: break-word;
-          vertical-align: top;
+        th, td {
+          padding: 10px;
+          text-align: center;
+          border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+          background-color: #f9f9f9;
         }
       `}</style>
     </div>
   );
+};
+
+const tableHeaderStyle = {
+  fontWeight: 'bold',
+  fontSize: '12px',
+  padding: '12px',
+  textAlign: 'center',
+  borderBottom: '2px solid #ddd',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+};
+
+const cellStyle = {
+  padding: '8px',
+  fontSize: '12px',
+  textAlign: 'center',
+  border: '1px solid #ddd',
+  maxHeight: '30px',
+  overflow: 'hidden',
+  whiteSpace: 'normal',
+  wordWrap: 'break-word',
+};
+
+const rowStyle = {
+  height: '40px',
+  borderBottom: '1px solid #ddd',
 };
 
 export default PMCheckpointHistory;
