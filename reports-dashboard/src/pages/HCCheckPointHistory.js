@@ -1,102 +1,138 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, Button, message, Row } from 'antd';
+import { Select, Button, message, Row, DatePicker } from 'antd';
 
 const { Option } = Select;
 
 const HCCheckpointHistory = () => {
   const [mouldNameOptions, setMouldNameOptions] = useState([]);
   const [instanceOptions, setInstanceOptions] = useState([]);
-  const [monthOptions, setMonthOptions] = useState([]);
   const [mouldName, setMouldName] = useState('');
   const [instanceNo, setInstanceNo] = useState('');
-  const [month, setMonth] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [reportData, setReportData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/moulds')
+    axios
+      .get('http://localhost:5000/api/moulds')
       .then((response) => setMouldNameOptions(response.data))
       .catch(() => message.error('Error fetching mould names.'));
-
-    axios.get('http://localhost:5000/api/instance')
-      .then((response) => setInstanceOptions(response.data))
-      .catch(() => message.error('Error fetching instance numbers.'));
-
-    axios.get('http://localhost:5000/api/month')
-      .then((response) => setMonthOptions(response.data.map(item => item.Month_Name)))
-      .catch(() => message.error('Error fetching month options.'));
   }, []);
 
+  useEffect(() => {
+    if (mouldName && startDate && endDate) {
+      axios
+        .post('http://localhost:5000/api/instance-hc', { mouldName, startDate, endDate })
+        .then((response) => setInstanceOptions(response.data))
+        .catch(() => message.error('Error fetching instance numbers.'));
+    }
+  }, [mouldName, startDate, endDate]);
+
   const handleGenerateReport = () => {
-    if (!mouldName || !instanceNo || !month) {
-      message.warning("Please select Mould Name, Instance No, and Month.");
+    if (!mouldName || !instanceNo || !startDate || !endDate) {
+      message.warning(
+        'Please select Mould Name, Instance No, Start Date, and End Date.'
+      );
       return;
     }
 
-    axios.post('http://localhost:5000/api/mould-executed-hc', {
-      mouldName,
-      instance: instanceNo,
-      month,
-    })
+    axios
+      .post('http://localhost:5000/api/mould-executed-hc', {
+        mouldName,
+        instance: instanceNo,
+        startDate,
+        endDate,
+      })
       .then((response) => setReportData(response.data))
       .catch(() => message.error('Error fetching report data.'));
   };
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh', maxWidth: '73vw', marginTop: '-15px', marginLeft: '-15px' }}>
-      <Row gutter={16} justify="start" style={{ marginBottom: '16px', gap: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Mould Name</label>
-          <Select
-            placeholder="Select Mould Name"
-            onChange={(value) => setMouldName(value)}
-            value={mouldName}
-            style={{ width: '180px' }}
-          >
-            {mouldNameOptions.map((option) => (
-              <Option key={option.MouldName} value={option.MouldName}>
-                {option.MouldName}
-              </Option>
-            ))}
-          </Select>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Instance No</label>
-          <Select
-            placeholder="Select Instance No"
-            onChange={(value) => setInstanceNo(value)}
-            value={instanceNo}
-            style={{ width: '180px' }}
-          >
-            {instanceOptions.map((option) => (
-              <Option key={option.Instance} value={option.Instance}>
-                {option.Instance}
-              </Option>
-            ))}
-          </Select>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Month</label>
-          <Select
-            placeholder="Select Month"
-            onChange={(value) => setMonth(value)}
-            value={month}
-            style={{ width: '180px' }}
-          >
-            {monthOptions.map((option) => (
-              <Option key={option} value={option}>
-                {option}
-              </Option>
-            ))}
-          </Select>
-        </div>
-        <Button
-          type="primary"
-          onClick={handleGenerateReport}
-          style={{ backgroundColor: '#00008b', padding: '4px 12px', height: '32px', lineHeight: '1' }}
+    <div
+    style={{
+      padding: '24px',
+      backgroundColor: '#e0e2e5',
+      minHeight: '84vh',
+      maxWidth: '73vw',
+      marginTop: '-15px',
+      marginLeft: '-15px',
+    }}
+  >
+    <Row
+      gutter={16}
+      justify="start"
+      style={{ marginBottom: '16px', gap: '16px' }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+          Mould Name
+        </label>
+        <Select
+          placeholder="Select Mould Name"
+          onChange={(value) => setMouldName(value)}
+          value={mouldName}
+          style={{ width: '120px' }}
         >
-          Generate
-        </Button>
+          {mouldNameOptions.map((option) => (
+            <Option key={option.MouldName} value={option.MouldName}>
+              {option.MouldName}
+            </Option>
+          ))}
+        </Select>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+          Start Date
+        </label>
+        <DatePicker
+          onChange={(date, dateString) => setStartDate(dateString)}
+          style={{ width: '120px' }}
+        />
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+          End Date
+        </label>
+        <DatePicker
+          onChange={(date, dateString) => setEndDate(dateString)}
+          style={{ width: '120px' }}
+        />
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+          Instance No
+        </label>
+        <Select
+          placeholder="Select Instance No"
+          onChange={(value) => setInstanceNo(value)}
+          value={instanceNo}
+          style={{ width: '120px' }}
+          disabled={!instanceOptions.length}
+        >
+          {instanceOptions.map((option) => (
+            <Option key={option.Instance} value={option.Instance}>
+              {option.Instance}
+            </Option>
+          ))}
+        </Select>
+      </div>
+
+      <Button
+        type="primary"
+        onClick={handleGenerateReport}
+        style={{
+          backgroundColor: '#00008b',
+          padding: '4px 12px',
+          height: '32px',
+          lineHeight: '1',
+        }}
+      >
+        Generate
+      </Button>
       </Row>
 
       <div style={{ marginTop: '12px', maxWidth: '100%', maxHeight: '450px', overflowY: 'auto', border: '1px solid #ddd' }}>

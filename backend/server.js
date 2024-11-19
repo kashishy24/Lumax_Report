@@ -11,9 +11,9 @@ app.use(express.json());
 
 // SQL Server Database Configuration
 const config = {
-    user: 'sa', // Replace with your SQL Server username
-    password: 'root', // Replace with your SQL Server password
-    server: 'DESKTOP-2VNVT1T\\SQLEXPRESS', // Replace with your server address (e.g., localhost or IP address)
+    user: 'genesis1', // Replace with your SQL Server username
+    password: 'Gen@123', // Replace with your SQL Server password
+    server: 'DESKTOP-URBGBGQ', // Replace with your server address (e.g., localhost or IP address)
     database: 'PPMS', // Replace with your database name
     options: {
         encrypt: true, // For Azure SQL or use false for local SQL Server
@@ -167,18 +167,83 @@ WHERE
 
 //to fetch the instance no
 
-app.get('/api/instance', async (req, res) => {
+// app.get('/api/instance', async (req, res) => {
+//     try {
+//         await sql.connect(config);
+//         const result = await sql.query('SELECT DISTINCT Instance FROM Mould_Executed_PMCheckPointHistory');
+//         res.json(result.recordset);
+//     } catch (error) {
+//         console.error("Error fetching instance names:", error);
+//         res.status(500).json({ error: "Database error" });
+//     } finally {
+//         //sql.close();
+//     }
+// });
+
+app.post('/api/instance', async (req, res) => {
+    const { mouldName, startDate, endDate } = req.body; // Get data from the request body
+
     try {
         await sql.connect(config);
-        const result = await sql.query('SELECT DISTINCT Instance FROM Mould_Executed_PMCheckPointHistory');
-        res.json(result.recordset);
+        
+        // Prepare the SQL query
+        const query = `
+            SELECT DISTINCT Instance 
+            FROM Mould_Executed_PMCheckListHistory
+            WHERE MouldID = (SELECT MouldID FROM Config_Mould WHERE MouldName = @mouldName)
+              AND StartTime >= @startDate 
+              AND EndTime <= @endDate;
+        `;
+        
+        // Prepare the request and bind parameters
+        const request = new sql.Request();
+        request.input('mouldName', sql.VarChar, mouldName);  // Declare the parameter @mouldName
+        request.input('startDate', sql.Date, startDate);    // Declare the parameter @startDate
+        request.input('endDate', sql.Date, endDate);        // Declare the parameter @endDate
+
+        // Execute the query with the parameters
+        const result = await request.query(query);
+
+        res.json(result.recordset); // Return the distinct instances
     } catch (error) {
         console.error("Error fetching instance names:", error);
         res.status(500).json({ error: "Database error" });
-    } finally {
-        //sql.close();
     }
 });
+
+//------------------instance for hc
+
+app.post('/api/instance-hc', async (req, res) => {
+    const { mouldName, startDate, endDate } = req.body; // Get data from the request body
+
+    try {
+        await sql.connect(config);
+        
+        // Prepare the SQL query
+        const query = `
+            SELECT DISTINCT Instance 
+            FROM Mould_Executed_HCCheckListHistory
+            WHERE MouldID = (SELECT MouldID FROM Config_Mould WHERE MouldName = @mouldName)
+              AND StartTime >= @startDate 
+              AND EndTime <= @endDate;
+        `;
+        
+        // Prepare the request and bind parameters
+        const request = new sql.Request();
+        request.input('mouldName', sql.VarChar, mouldName);  // Declare the parameter @mouldName
+        request.input('startDate', sql.Date, startDate);    // Declare the parameter @startDate
+        request.input('endDate', sql.Date, endDate);        // Declare the parameter @endDate
+
+        // Execute the query with the parameters
+        const result = await request.query(query);
+
+        res.json(result.recordset); // Return the distinct instances
+    } catch (error) {
+        console.error("Error fetching instance names:", error);
+        res.status(500).json({ error: "Database error" });
+    }
+});
+//--------------
 
 //to fetch the month
 
@@ -287,8 +352,89 @@ function getMonthDateRange(month) {
 }
 
 // Fetch the PM Checkpoint history data
+// app.post('/api/mould-executed-pm', async (req, res) => {
+//     const { mouldName, instance, month } = req.body;
+
+//     try {
+//         await sql.connect(config);
+
+//         // Step 1: Retrieve MouldID from MouldName
+//         const mouldQuery = `SELECT MouldID FROM Config_Mould WHERE MouldName = @mouldName`;
+//         const mouldRequest = new sql.Request();
+//         mouldRequest.input('mouldName', sql.NVarChar, mouldName);
+//         const mouldResult = await mouldRequest.query(mouldQuery);
+
+//         if (mouldResult.recordset.length === 0) {
+//             return res.status(404).json({ error: "Mould not found" });
+//         }
+
+//         const mouldId = mouldResult.recordset[0].MouldID;
+
+//         // Step 2: Derive the startDate and endDate from the provided month
+//         const monthMap = {
+//             january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7,
+//             september: 8, october: 9, november: 10, december: 11
+//         };
+
+//         const monthLower = month.toLowerCase();
+//         const startDate = new Date(new Date().getFullYear(), monthMap[monthLower], 1);
+//         const endDate = new Date(new Date().getFullYear(), monthMap[monthLower] + 1, 0, 23, 59, 59, 999); // Last day of the month
+
+//         // Step 3: Fetch Data from Mould_Executed_PMCheckPointHistory
+//         const pmHistoryQuery = `
+//            SELECT 
+    
+//     history.CheckListID,
+//     checklist.CheckListName,   -- Added CheckListName from Config_PMCheckList
+//     history.CheckPointID,
+//     history.CheckPointName,
+//     history.CheckArea,
+//     history.CheckPointItems,
+//     history.CheckPointArea,
+//     history.CheckingMethod,
+//     history.JudgementCriteria,
+//     history.CheckListType,
+//     history.CheckPointType,
+//     history.UOM,
+//     history.UpperLimit,
+//     history.LowerLimit,
+//     history.Standard,
+//     history.CheckPointValue,
+//     history.OKNOK,
+//     history.Observation,
+//     history.Instance,
+//     history.Timestamp
+// FROM 
+//     [PPMS].[dbo].[Mould_Executed_PMCheckPointHistory] AS history
+// JOIN 
+//     [PPMS].[dbo].[Config_PMCheckList] AS checklist 
+//     ON history.CheckListID = checklist.CheckListID
+// WHERE 
+//     checklist.MouldID = @mouldId
+//     AND history.Instance = @instance
+//     AND history.Timestamp >= @startDate
+//     AND history.Timestamp <= @endDate;
+//         `;
+
+//         const pmHistoryRequest = new sql.Request();
+//         pmHistoryRequest.input('mouldId', sql.NVarChar, mouldId); // MouldID is treated as a string
+//         pmHistoryRequest.input('instance', sql.Int, instance); // Instance is an integer
+//         pmHistoryRequest.input('startDate', sql.DateTime, startDate);
+//         pmHistoryRequest.input('endDate', sql.DateTime, endDate);
+
+//         const pmHistoryResult = await pmHistoryRequest.query(pmHistoryQuery);
+
+//         res.json(pmHistoryResult.recordset);
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).json({ error: "Database error" });
+//     } finally {
+//         //sql.close();
+//     }
+// });
+
 app.post('/api/mould-executed-pm', async (req, res) => {
-    const { mouldName, instance, month } = req.body;
+    const { mouldName, instance } = req.body; // Removed startDate and endDate
 
     try {
         await sql.connect(config);
@@ -305,57 +451,42 @@ app.post('/api/mould-executed-pm', async (req, res) => {
 
         const mouldId = mouldResult.recordset[0].MouldID;
 
-        // Step 2: Derive the startDate and endDate from the provided month
-        const monthMap = {
-            january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7,
-            september: 8, october: 9, november: 10, december: 11
-        };
-
-        const monthLower = month.toLowerCase();
-        const startDate = new Date(new Date().getFullYear(), monthMap[monthLower], 1);
-        const endDate = new Date(new Date().getFullYear(), monthMap[monthLower] + 1, 0, 23, 59, 59, 999); // Last day of the month
-
-        // Step 3: Fetch Data from Mould_Executed_PMCheckPointHistory
+        // Step 2: Fetch Data from Mould_Executed_PMCheckPointHistory
         const pmHistoryQuery = `
            SELECT 
-    
-    history.CheckListID,
-    checklist.CheckListName,   -- Added CheckListName from Config_PMCheckList
-    history.CheckPointID,
-    history.CheckPointName,
-    history.CheckArea,
-    history.CheckPointItems,
-    history.CheckPointArea,
-    history.CheckingMethod,
-    history.JudgementCriteria,
-    history.CheckListType,
-    history.CheckPointType,
-    history.UOM,
-    history.UpperLimit,
-    history.LowerLimit,
-    history.Standard,
-    history.CheckPointValue,
-    history.OKNOK,
-    history.Observation,
-    history.Instance,
-    history.Timestamp
-FROM 
-    [PPMS].[dbo].[Mould_Executed_PMCheckPointHistory] AS history
-JOIN 
-    [PPMS].[dbo].[Config_PMCheckList] AS checklist 
-    ON history.CheckListID = checklist.CheckListID
-WHERE 
-    checklist.MouldID = @mouldId
-    AND history.Instance = @instance
-    AND history.Timestamp >= @startDate
-    AND history.Timestamp <= @endDate;
+                history.CheckListID,
+                checklist.CheckListName,   -- Added CheckListName from Config_PMCheckList
+                history.CheckPointID,
+                history.CheckPointName,
+                history.CheckArea,
+                history.CheckPointItems,
+                history.CheckPointArea,
+                history.CheckingMethod,
+                history.JudgementCriteria,
+                history.CheckListType,
+                history.CheckPointType,
+                history.UOM,
+                history.UpperLimit,
+                history.LowerLimit,
+                history.Standard,
+                history.CheckPointValue,
+                history.OKNOK,
+                history.Observation,
+                history.Instance,
+                history.Timestamp
+            FROM 
+                [PPMS].[dbo].[Mould_Executed_PMCheckPointHistory] AS history
+            JOIN 
+                [PPMS].[dbo].[Config_PMCheckList] AS checklist 
+                ON history.CheckListID = checklist.CheckListID
+            WHERE 
+                checklist.MouldID = @mouldId
+                AND history.Instance = @instance;
         `;
 
         const pmHistoryRequest = new sql.Request();
         pmHistoryRequest.input('mouldId', sql.NVarChar, mouldId); // MouldID is treated as a string
         pmHistoryRequest.input('instance', sql.Int, instance); // Instance is an integer
-        pmHistoryRequest.input('startDate', sql.DateTime, startDate);
-        pmHistoryRequest.input('endDate', sql.DateTime, endDate);
 
         const pmHistoryResult = await pmHistoryRequest.query(pmHistoryQuery);
 
@@ -364,9 +495,11 @@ WHERE
         console.error("Error fetching data:", error);
         res.status(500).json({ error: "Database error" });
     } finally {
-        //sql.close();
+        // Ensure connection is properly closed if needed
+        // sql.close();
     }
 });
+
 //fetch the value from Mould_Executed_HCCheckPointHistory
 app.post('/api/mould-executed-hc', async (req, res) => {
     const { mouldName, instance, month } = req.body;
@@ -386,16 +519,7 @@ app.post('/api/mould-executed-hc', async (req, res) => {
 
         const mouldId = mouldResult.recordset[0].MouldID;
 
-        // Step 2: Derive the startDate and endDate from the provided month
-        const monthMap = {
-            january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7,
-            september: 8, october: 9, november: 10, december: 11
-        };
-
-        const monthLower = month.toLowerCase();
-        const startDate = new Date(new Date().getFullYear(), monthMap[monthLower], 1);
-        const endDate = new Date(new Date().getFullYear(), monthMap[monthLower] + 1, 0, 23, 59, 59, 999); // Last day of the month
-
+       
         // Step 3: Fetch Data from Mould_Executed_HCCheckPointHistory
         const hcHistoryQuery = `
            SELECT 
@@ -425,16 +549,13 @@ JOIN
 WHERE 
     checklist.MouldID = @mouldId
     AND history.Instance = @instance
-    AND history.Timestamp >= @startDate
-    AND history.Timestamp <= @endDate;
+  
         `;
 
         const hcHistoryRequest = new sql.Request();
         hcHistoryRequest.input('mouldId', sql.NVarChar, mouldId); // MouldID is treated as a string
         hcHistoryRequest.input('instance', sql.Int, instance); // Instance is an integer
-        hcHistoryRequest.input('startDate', sql.DateTime, startDate);
-        hcHistoryRequest.input('endDate', sql.DateTime, endDate);
-
+       
         const hcHistoryResult = await hcHistoryRequest.query(hcHistoryQuery);
 
         // Step 4: Return the result

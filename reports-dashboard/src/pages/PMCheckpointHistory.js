@@ -1,57 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, Button, message, Row } from 'antd';
+import { Select, Button, message, Row, DatePicker } from 'antd';
 
 const { Option } = Select;
 
 const PMCheckpointHistory = () => {
   const [mouldNameOptions, setMouldNameOptions] = useState([]);
   const [instanceOptions, setInstanceOptions] = useState([]);
-  const [monthOptions, setMonthOptions] = useState([]);
   const [mouldName, setMouldName] = useState('');
   const [instanceNo, setInstanceNo] = useState('');
-  const [month, setMonth] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [reportData, setReportData] = useState([]);
 
+  // Fetch mould names on component mount
   useEffect(() => {
-    axios.get('http://localhost:5000/api/moulds')
+    axios
+      .get('http://localhost:5000/api/moulds')
       .then((response) => setMouldNameOptions(response.data))
       .catch(() => message.error('Error fetching mould names.'));
-
-    axios.get('http://localhost:5000/api/instance')
-      .then((response) => setInstanceOptions(response.data))
-      .catch(() => message.error('Error fetching instance numbers.'));
-
-    axios.get('http://localhost:5000/api/month')
-      .then((response) => setMonthOptions(response.data.map(item => item.Month_Name)))
-      .catch(() => message.error('Error fetching month options.'));
   }, []);
 
+  // Fetch instance options dynamically based on filters
+  useEffect(() => {
+    if (mouldName && startDate && endDate) {
+      axios
+        .post('http://localhost:5000/api/instance', { mouldName, startDate, endDate })
+        .then((response) => setInstanceOptions(response.data))
+        .catch(() => message.error('Error fetching instance numbers.'));
+    }
+  }, [mouldName, startDate, endDate]);
+//
   const handleGenerateReport = () => {
-    if (!mouldName || !instanceNo || !month) {
-      message.warning("Please select Mould Name, Instance No, and Month.");
+    if (!mouldName || !instanceNo || !startDate || !endDate) {
+      message.warning(
+        'Please select Mould Name, Instance No, Start Date, and End Date.'
+      );
       return;
     }
 
-    axios.post('http://localhost:5000/api/mould-executed-pm', {
-      mouldName,
-      instance: instanceNo,
-      month,
-    })
+    axios
+      .post('http://localhost:5000/api/mould-executed-pm', {
+        mouldName,
+        instance: instanceNo,
+        startDate,
+        endDate,
+      })
       .then((response) => setReportData(response.data))
       .catch(() => message.error('Error fetching report data.'));
   };
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '84vh', maxWidth: '73vw' ,marginTop: '-15px', marginLeft: '-15px'}}>
-      <Row gutter={16} justify="start" style={{ marginBottom: '16px', gap: '16px' }}>
+    <div
+      style={{
+        padding: '24px',
+        backgroundColor: '#e0e2e5',
+        minHeight: '84vh',
+        maxWidth: '73vw',
+        marginTop: '-15px',
+        marginLeft: '-15px',
+      }}
+    >
+      <Row
+        gutter={16}
+        justify="start"
+        style={{ marginBottom: '16px', gap: '16px' }}
+      >
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Mould Name</label>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+            Mould Name
+          </label>
           <Select
             placeholder="Select Mould Name"
             onChange={(value) => setMouldName(value)}
             value={mouldName}
-            style={{ width: '180px' }}
+            style={{ width: '120px' }}
           >
             {mouldNameOptions.map((option) => (
               <Option key={option.MouldName} value={option.MouldName}>
@@ -60,13 +83,37 @@ const PMCheckpointHistory = () => {
             ))}
           </Select>
         </div>
+
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Instance No</label>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+            Start Date
+          </label>
+          <DatePicker
+            onChange={(date, dateString) => setStartDate(dateString)}
+            style={{ width: '120px' }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+            End Date
+          </label>
+          <DatePicker
+            onChange={(date, dateString) => setEndDate(dateString)}
+            style={{ width: '120px' }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+            Instance No
+          </label>
           <Select
             placeholder="Select Instance No"
             onChange={(value) => setInstanceNo(value)}
             value={instanceNo}
-            style={{ width: '180px' }}
+            style={{ width: '120px' }}
+            disabled={!instanceOptions.length}
           >
             {instanceOptions.map((option) => (
               <Option key={option.Instance} value={option.Instance}>
@@ -75,53 +122,88 @@ const PMCheckpointHistory = () => {
             ))}
           </Select>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Month</label>
-          <Select
-            placeholder="Select Month"
-            onChange={(value) => setMonth(value)}
-            value={month}
-            style={{ width: '180px' }}
-          >
-            {monthOptions.map((option) => (
-              <Option key={option} value={option}>
-                {option}
-              </Option>
-            ))}
-          </Select>
-        </div>
+
         <Button
           type="primary"
           onClick={handleGenerateReport}
-          style={{ backgroundColor: '#00008b', padding: '4px 12px', height: '32px', lineHeight: '1' }}
+          style={{
+            backgroundColor: '#00008b',
+            padding: '4px 12px',
+            height: '32px',
+            lineHeight: '1',
+          }}
         >
           Generate
         </Button>
       </Row>
 
-      <div style={{ marginTop: '12px', maxWidth: '100%', maxHeight: '450px', overflowY: 'auto', border: '1px solid #ddd' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff' }}>
+      <div
+        style={{
+          marginTop: '12px',
+          maxWidth: '100%',
+          maxHeight: '450px',
+          overflowY: 'auto',
+          border: '1px solid #ddd',
+        }}
+      >
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            backgroundColor: '#fff',
+          }}
+        >
           <thead>
             <tr style={{ backgroundColor: '#f5f5f5', textAlign: 'left' }}>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckListName</th>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointID</th>
-              <th style={{ ...tableHeaderStyle, width: '120px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointName</th>
-              <th style={{ ...tableHeaderStyle, width: '80px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckArea</th>
-              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointItems</th>
-              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointArea</th>
-              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckingMethod</th>
-              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>JudgementCriteria</th>
-              <th style={{ ...tableHeaderStyle, width: '110px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckListType</th>
-              <th style={{ ...tableHeaderStyle, width: '130px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointType</th>
-              <th style={{ ...tableHeaderStyle, width: '70px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>UOM</th>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>UpperLimit</th>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>LowerLimit</th>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Standard</th>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>CheckPointValue</th>
-              <th style={{ ...tableHeaderStyle, width: '70px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>OKNOK</th>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Observation</th>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Instance</th>
-              <th style={{ ...tableHeaderStyle, width: '100px', position: 'sticky', top: 0, backgroundColor: '#f5f5f5', zIndex: 1 }}>Timestamp</th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+                CheckListName
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+                CheckPointID
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '120px' }}>
+                CheckPointName
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '80px' }}>
+                CheckArea
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+                CheckPointItems
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+                CheckPointArea
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+                CheckingMethod
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+                JudgementCriteria
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '110px' }}>
+                CheckListType
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+                CheckPointType
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '70px' }}>UOM</th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+                UpperLimit
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+                LowerLimit
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>Standard</th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+                CheckPointValue
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '70px' }}>OKNOK</th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+                Observation
+              </th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>Instance</th>
+              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+                Timestamp
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -151,17 +233,6 @@ const PMCheckpointHistory = () => {
           </tbody>
         </table>
       </div>
-      
-      <style jsx>{`
-        th, td {
-          padding: 10px;
-          text-align: center;
-          border: 1px solid #ddd;
-        }
-        tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
-      `}</style>
     </div>
   );
 };
@@ -183,14 +254,14 @@ const cellStyle = {
   textAlign: 'center',
   border: '1px solid #ddd',
   maxHeight: '30px',
+  textOverflow: 'ellipsis',
   overflow: 'hidden',
-  whiteSpace: 'normal',
-  wordWrap: 'break-word',
 };
 
 const rowStyle = {
-  height: '40px',
-  borderBottom: '1px solid #ddd',
+  fontWeight: '500',
+  fontSize: '14px',
+  textAlign: 'center',
 };
 
 export default PMCheckpointHistory;
