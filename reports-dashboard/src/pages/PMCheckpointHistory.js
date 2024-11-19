@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, Button, message, Row, DatePicker } from 'antd';
+import { Select, Button, message, Row, DatePicker, Input } from 'antd';
 
 const { Option } = Select;
 
@@ -13,6 +13,18 @@ const PMCheckpointHistory = () => {
   const [endDate, setEndDate] = useState('');
   const [reportData, setReportData] = useState([]);
 
+
+  const [partName, setPartName] = useState('');
+  const [mouldIdNumber, setMouldIdNumber] = useState('');
+  const [modelCode, setModelCode] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [rawMaterial, setRawMaterial] = useState('');
+  const [partNo, setPartNo] = useState('');
+  const [pmFrequency, setPmFrequency] = useState('');
+  const [noOfShots, setNoOfShots] = useState('');
+  const [month, setMonth] = useState('');
+  const [gateType, setGateType] = useState('');
+  const [mcTonnage, setMcTonnage] = useState('');
   // Fetch mould names on component mount
   useEffect(() => {
     axios
@@ -30,7 +42,7 @@ const PMCheckpointHistory = () => {
         .catch(() => message.error('Error fetching instance numbers.'));
     }
   }, [mouldName, startDate, endDate]);
-//
+  //
   const handleGenerateReport = () => {
     if (!mouldName || !instanceNo || !startDate || !endDate) {
       message.warning(
@@ -64,7 +76,7 @@ const PMCheckpointHistory = () => {
       <Row
         gutter={16}
         justify="start"
-        style={{ marginBottom: '16px', gap: '16px' }}
+        style={{ marginBottom: '16px', gap: '16px', marginLeft: '2px' }}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
@@ -112,7 +124,7 @@ const PMCheckpointHistory = () => {
             placeholder="Select Instance No"
             onChange={(value) => setInstanceNo(value)}
             value={instanceNo}
-            style={{ width: '120px' }}
+            style={{ width: '100px' }}
             disabled={!instanceOptions.length}
           >
             {instanceOptions.map((option) => (
@@ -136,6 +148,146 @@ const PMCheckpointHistory = () => {
           Generate
         </Button>
       </Row>
+      <Row
+        gutter={16}
+        justify="start"
+        style={{ marginBottom: '16px', gap: '16px', marginLeft: '2px' }}
+      >
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ marginRight: '-3px', minWidth: '100px' }}>
+            Mould Name
+          </label>
+          <Input
+            placeholder="Part Name"
+            value={partName}
+            style={{ width: '120px' }}
+            onChange={(e) => setPartName(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{  marginRight: '8px', minWidth: '100px' }}>
+            Mould ID No
+          </label>
+          <Input
+            placeholder="Mould ID Number"
+            value={mouldIdNumber}
+            style={{ width: '100px' }}
+            onChange={(e) => setMouldIdNumber(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{  marginRight: '8px', minWidth: '100px' }}>
+            Model Code
+          </label>
+          <Input
+            placeholder="Model Code"
+            value={modelCode}
+            style={{ width: '100px' }}
+            onChange={(e) => setModelCode(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{marginRight: '8px', minWidth: '100px' }}>
+            Customer Name
+          </label>
+          <Input
+            placeholder="Customer Name"
+            value={customerName}
+            style={{ width: '100px' }}
+            onChange={(e) => setCustomerName(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+            Raw Material
+          </label>
+
+          <Input
+            placeholder="Raw Material"
+            value={rawMaterial}
+            style={{ width: '100px' }}
+            onChange={(e) => setRawMaterial(e.target.value)}
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+            Part No
+          </label>
+
+          <Input
+            placeholder="Part No"
+            value={partNo}
+            style={{ width: '100px' }}
+            onChange={(e) => setPartNo(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+            PM Frequency
+          </label>
+
+          <Input
+            placeholder="PM Frequency"
+            value={pmFrequency}
+            style={{ width: '50px' }}
+            onChange={(e) => setPmFrequency(e.target.value)}
+          /></div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{  marginRight: '8px', minWidth: '100px' }}>
+            No. of Shots
+          </label>
+          <Input
+            placeholder="No. of Shots"
+            value={noOfShots}
+            style={{ width: '50px' }}
+            onChange={(e) => setNoOfShots(e.target.value)}
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{  marginRight: '8px', minWidth: '50px' }}>
+            Month
+          </label>
+          <Input
+            placeholder="Month"
+            value={month}
+            style={{ width: '100px' }}
+            onChange={(e) => setMonth(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+            Gate Type
+          </label>
+          <Input
+            placeholder="Gate Type"
+            value={gateType}
+            style={{ width: '80px' }}
+            onChange={(e) => setGateType(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+            M/C Tonnage
+          </label>
+          <Input
+            placeholder="M/C Tonnage"
+            value={mcTonnage}
+            style={{ width: '100px' }}
+            onChange={(e) => setMcTonnage(e.target.value)}
+          />
+        </div>
+        {/* </div> */}
+      </Row>
+
 
       <div
         style={{
