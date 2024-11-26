@@ -566,6 +566,129 @@ WHERE
     }
 });
 
+
+
+//------------------to fetch the meta data
+
+// app.get('/api/getMetadata', async (req, res) => {
+//     const mouldName = req.query.mouldName;
+//     console.log(`Received mouldName: ${mouldName}`);  // Add this line for debugging
+
+//     try {
+//         await sql.connect(config);
+//         const result = await sql.query`
+//             SELECT 
+//                 m.MouldName, 
+//                 md.MetaDataName, 
+//                 md.MetaDataValue
+//             FROM 
+//                 Config_Mould m
+//             JOIN 
+//                 Config_PMCheckList c ON c.MouldID = m.MouldID
+//             JOIN 
+//                 Config_PMMetaData md ON md.CheckListID = c.CheckListID
+//             WHERE 
+//                 m.MouldName = ${mouldName}
+//         `;
+        
+//         if (result.recordset.length > 0) {
+//             res.json(result.recordset);
+//         } else {
+//             res.status(404).json({ message: 'No data found for this mould name.' });
+//         }
+//     } catch (err) {
+//         console.error('Error executing query:', err);
+//         res.status(500).json({ error: 'Database query failed' });
+//     }
+// });
+//----------------------1-------------
+// app.post('/api/getMetadata', async (req, res) => {
+//     const mouldName = req.body.mouldName?.trim(); // Safe access to avoid errors
+//     console.log(`Received mouldName: ${mouldName}`); // Debugging log
+
+//     if (!mouldName) {
+//         return res.status(400).json({ error: 'mouldName is required' });
+//     }
+
+//     try {
+//         await sql.connect(config);
+//         const result = await sql.query`
+//             SELECT 
+//                 m.MouldName, 
+//                 md.MetaDataName, 
+//                 md.MetaDataValue
+//             FROM 
+//                 Config_Mould m
+//             JOIN 
+//                 Config_PMCheckList c ON c.MouldID = m.MouldID
+//             JOIN 
+//                 Config_PMMetaData md ON md.CheckListID = c.CheckListID
+//             WHERE 
+//                 m.MouldName = ${mouldName}
+//         `;
+        
+//         if (result.recordset.length > 0) {
+//             res.json(result.recordset);
+//         } else {
+//             res.status(404).json({ message: 'No data found for this mould name.' });
+//         }
+//     } catch (err) {
+//         console.error('Error executing query:', err);
+//         res.status(500).json({ error: 'Database query failed' });
+//     }
+// });
+
+
+app.post('/api/getMetadata', async (req, res) => {
+    const mouldName = req.body.mouldName?.trim(); // Safe access to avoid errors
+    console.log(`Received mouldName: ${mouldName}`); // Debugging log
+
+    if (!mouldName) {
+        return res.status(400).json({ error: 'mouldName is required' });
+    }
+
+    try {
+        await sql.connect(config);
+        const result = await sql.query`
+            SELECT 
+                m.MouldName, 
+                md.MetaDataName, 
+                md.MetaDataValue
+            FROM 
+                Config_Mould m
+            JOIN 
+                Config_PMCheckList c ON c.MouldID = m.MouldID
+            JOIN 
+                Config_PMMetaData md ON md.CheckListID = c.CheckListID
+            WHERE 
+                m.MouldName = ${mouldName}
+        `;
+        
+        if (result.recordset.length > 0) {
+            // Restructure response to key-value format
+            const formattedData = result.recordset.reduce((acc, { MetaDataName, MetaDataValue }) => {
+                acc[MetaDataName] = MetaDataValue;
+                return acc;
+            }, {});
+            
+            // Log the formatted data for debugging
+            console.log('Formatted Response:', formattedData);
+
+            // Send the formatted response
+            res.json(formattedData);
+        } else {
+            res.status(404).json({ message: 'No data found for this mould name.' });
+        }
+    } catch (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Database query failed' });
+    }
+});
+
+
+
+
+
 // Start the server on port 5000
 app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);

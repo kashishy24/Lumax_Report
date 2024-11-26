@@ -42,25 +42,86 @@ const PMCheckpointHistory = () => {
         .catch(() => message.error('Error fetching instance numbers.'));
     }
   }, [mouldName, startDate, endDate]);
+
+
+
   //
+  // const handleGenerateReport = () => {
+  //   if (!mouldName || !instanceNo || !startDate || !endDate) {
+  //     message.warning(
+  //       'Please select Mould Name, Instance No, Start Date, and End Date.'
+  //     );
+  //     return;
+  //   }
+   
+
+  //   axios
+  //     .post('http://localhost:5000/api/mould-executed-pm', {
+  //       mouldName,
+  //       instance: instanceNo,
+  //       startDate,
+  //       endDate,
+  //     })
+  //     .then((response) => setReportData(response.data))
+  //     .catch(() => message.error('Error fetching report data.'));
+  // };
+
+
+
+   // Fetch part details when a Mould Name is selected
+   const handleMouldChange = (value) => {
+    setMouldName(value);
+    setPartName(''); // Reset part details during loading
+  
+    axios
+      .post('http://localhost:5000/api/getMetadata', { mouldName: value }) // Corrected the data payload
+      .then((response) => {
+        const data = response.data;
+        setPartName(data['Part Name'] || '');
+        setCustomerName(data['Customer Name'] || '');
+        setGateType(data['Gate Type'] || '');
+        setRawMaterial(data['Material Name'] || '');
+        setMcTonnage(data['MC Tonnage'] || '');
+      })
+      .catch(() => {
+        message.error('Error fetching part details.');
+        setPartName('');
+        setCustomerName('');
+        setGateType('');
+        setRawMaterial('');
+        setMcTonnage('');
+      });
+  };
+  
+
+
+
   const handleGenerateReport = () => {
-    if (!mouldName || !instanceNo || !startDate || !endDate) {
-      message.warning(
-        'Please select Mould Name, Instance No, Start Date, and End Date.'
-      );
+    if (!mouldName) {
+      message.warning('Please select a Mould Name.');
       return;
     }
+  
 
-    axios
-      .post('http://localhost:5000/api/mould-executed-pm', {
-        mouldName,
-        instance: instanceNo,
-        startDate,
-        endDate,
-      })
-      .then((response) => setReportData(response.data))
-      .catch(() => message.error('Error fetching report data.'));
+  
+    // Fetch table data based on filters
+    if (startDate && endDate && instanceNo) {
+      axios
+        .post('http://localhost:5000/api/mould-executed-pm', {
+          mouldName,
+          instance: instanceNo,
+          startDate,
+          endDate,
+        })
+        .then((response) => setReportData(response.data))
+        .catch(() => message.error('Error fetching report data.'));
+    }
   };
+  
+
+
+
+
 
   return (
     <div
@@ -84,7 +145,7 @@ const PMCheckpointHistory = () => {
           </label>
           <Select
             placeholder="Select Mould Name"
-            onChange={(value) => setMouldName(value)}
+            onChange={handleMouldChange}
             value={mouldName}
             style={{ width: '120px' }}
           >
@@ -94,6 +155,9 @@ const PMCheckpointHistory = () => {
               </Option>
             ))}
           </Select>
+
+          
+          
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -154,29 +218,17 @@ const PMCheckpointHistory = () => {
         style={{ marginBottom: '16px', gap: '16px', marginLeft: '2px' }}
       >
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ marginRight: '-3px', minWidth: '100px' }}>
-            Mould Name
-          </label>
-          <Input
-            placeholder="Part Name"
-            value={partName}
-            style={{ width: '120px' }}
-            onChange={(e) => setPartName(e.target.value)}
-          />
-        </div>
 
+        {/* <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Part Name</label>
+          <Input value={partName} style={{ width: '100px' }} readOnly />
+        </div> */}
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{  marginRight: '8px', minWidth: '100px' }}>
-            Mould ID No
-          </label>
-          <Input
-            placeholder="Mould ID Number"
-            value={mouldIdNumber}
-            style={{ width: '100px' }}
-            onChange={(e) => setMouldIdNumber(e.target.value)}
-          />
+        <div>
+          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Part Name</label>
+          <Input value={partName} placeholder="Part Name" readOnly style={{ width: '150px' }} />
         </div>
+    </div>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <label style={{  marginRight: '8px', minWidth: '100px' }}>
@@ -416,4 +468,4 @@ const rowStyle = {
   textAlign: 'center',
 };
 
-export default PMCheckpointHistory;
+export default PMCheckpointHistory;   
