@@ -11,18 +11,54 @@ const PMReport = () => {
   const [endDate, setEndDate] = useState(null);
   const [reportData, setReportData] = useState([]);
 
+  const [partName, setPartName] = useState('');
+  const [mouldIdNumber, setMouldIdNumber] = useState('');
+  const [modelCode, setModelCode] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [rawMaterial, setRawMaterial] = useState('');
+  const [partNo, setPartNo] = useState('');
+  const [pmFrequency, setPmFrequency] = useState('');
+  const [noOfShots, setNoOfShots] = useState('');
+  const [month, setMonth] = useState('');
+  const [gateType, setGateType] = useState('');
+  const [mcTonnage, setMcTonnage] = useState('');
   useEffect(() => {
     // Fetch Mould Names from backend
     axios.get('http://localhost:5000/api/moulds')
       .then((response) => setMouldNameOptions(response.data))
       .catch(() => message.error('Error fetching mould names.'));
   }, []);
-
+  const handleMouldChange = (value) => {
+    setMouldName(value);
+    setPartName(''); // Reset part details during loading
+  
+    axios
+      .post('http://localhost:5000/api/getMetadata', { mouldName: value }) // Corrected the data payload
+      .then((response) => {
+        const data = response.data;
+        setPartName(data['Part Name'] || '');
+        setCustomerName(data['Customer Name'] || '');
+        setGateType(data['Gate Type'] || '');
+        setRawMaterial(data['Material Name'] || '');
+        setMcTonnage(data['MC Tonnage'] || '');
+      })
+      .catch(() => {
+        message.error('Error fetching part details.');
+        setPartName('');
+        setCustomerName('');
+        setGateType('');
+        setRawMaterial('');
+        setMcTonnage('');
+      });
+  };
   const handleGenerateReport = () => {
     if (!mouldName || !startDate || !endDate) {
       message.warning("Please select Mould Name, Start Date, and End Date.");
       return;
     }
+
+      // Fetch part details when a Mould Name is selected
+ 
 
     // Fetch report data for Preventive Maintenance using MouldName instead of MouldID
     axios.post('http://localhost:5000/api/maintenance/pm', {
@@ -36,12 +72,12 @@ const PMReport = () => {
 
   return (
     <div style={{ padding: '24px', backgroundColor: '#e0e2e5', minHeight: '89.5vh', maxWidth: '73vw', marginTop: '-15px', marginLeft: '-15px' }}>
-      <Row justify="start" align="middle" style={{ marginBottom: '16px', gap: '16px' }}>
+      <Row justify="start" align="middle" style={{ marginBottom: '5px', gap: '16px',marginLeft: '-17px',marginTop:'-20px'}}>
         <div style={{ display: 'flex', alignItems: 'center'}}>
           <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Mould Name</label>
           <Select
             placeholder="Select Mould Name"
-            onChange={(value) => setMouldName(value)}
+             onChange={handleMouldChange}
             value={mouldName}
             style={{ width: '180px' }}
           >
@@ -58,7 +94,7 @@ const PMReport = () => {
           <DatePicker
             onChange={(date) => setStartDate(date)}
             value={startDate}
-            style={{ width: '180px' }}
+            style={{ width: '160px' }}
           />
         </div>
 
@@ -67,7 +103,7 @@ const PMReport = () => {
           <DatePicker
             onChange={(date) => setEndDate(date)}
             value={endDate}
-            style={{ width: '180px' }}
+            style={{ width: '160px' }}
           />
         </div>
 

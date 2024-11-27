@@ -78,7 +78,7 @@ const PMCheckpointHistory = () => {
 
 
   const handleGenerateReport = () => {
-    if (!mouldName) {
+    if (!mouldName || !instanceNo || !startDate || !endDate) {
       message.warning('Please select a Mould Name.');
       return;
     }
@@ -86,17 +86,27 @@ const PMCheckpointHistory = () => {
 
   
     // Fetch table data based on filters
-    if (startDate && endDate && instanceNo) {
-      axios
-        .post('http://localhost:5000/api/mould-executed-pm', {
-          mouldName,
-          instance: instanceNo,
-          startDate,
-          endDate,
-        })
-        .then((response) => setReportData(response.data))
-        .catch(() => message.error('Error fetching report data.'));
-    }
+    // if (startDate && endDate && instanceNo) {
+    //   axios
+    //     .post('http://localhost:5000/api/mould-executed-pm', {
+    //       mouldName,
+    //       instance: instanceNo,
+    //       startDate,
+    //       endDate,
+    //     })
+    //     .then((response) => setReportData(response.data))
+    //     .catch(() => message.error('Error fetching report data.'));
+    // }
+
+    axios
+    .post('http://localhost:5000/api/mould-executed-pm', {
+      mouldName,
+      instance: instanceNo,
+      startDate,
+      endDate,
+    })
+    .then((response) => setReportData(response.data))
+    .catch(() => message.error('Error fetching report data.'));
   };
   
 
@@ -316,18 +326,7 @@ const PMCheckpointHistory = () => {
             onChange={(e) => setMcTonnage(e.target.value)}
           />
      </div>
-        {/* <div style={{ display: 'flex', alignItems: 'center',marginTop:'-25px'  }}>
-          <label style={{ marginRight: '8px', minWidth: '100px' }}>
-            M/C Tonnage
-          </label>
-          <Input
-            placeholder="M/C Tonnage"
-            value={mcTonnage}
-            style={{ width: '100px' }}
-            onChange={(e) => setMcTonnage(e.target.value)}
-          />
-        </div> */}
-        {/* </div> */}
+       
       </Row>
 
 

@@ -165,20 +165,7 @@ WHERE
     }
 });
 
-//to fetch the instance no
-
-// app.get('/api/instance', async (req, res) => {
-//     try {
-//         await sql.connect(config);
-//         const result = await sql.query('SELECT DISTINCT Instance FROM Mould_Executed_PMCheckPointHistory');
-//         res.json(result.recordset);
-//     } catch (error) {
-//         console.error("Error fetching instance names:", error);
-//         res.status(500).json({ error: "Database error" });
-//     } finally {
-//         //sql.close();
-//     }
-// });
+//Fecth instance based on mould start,end date from pm checklist table
 
 app.post('/api/instance', async (req, res) => {
     const { mouldName, startDate, endDate } = req.body; // Get data from the request body
@@ -245,87 +232,6 @@ app.post('/api/instance-hc', async (req, res) => {
 });
 //--------------
 
-//to fetch the month
-
-app.get('/api/month', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const result = await sql.query(`
-            WITH MonthTable AS (
-                SELECT DISTINCT Instance, DATENAME(MONTH, CAST(Timestamp AS date)) AS Month_Name
-                FROM [PPMS].[dbo].[Mould_Executed_PMCheckPointHistory]
-            )
-            SELECT DISTINCT Month_Name FROM MonthTable
-        `);
-        res.json(result.recordset);  // Send the distinct month names as JSON
-    } catch (error) {
-        console.error("Error fetching month names:", error);
-        res.status(500).json({ error: "Database error" });
-    } finally {
-       // sql.close();
-    }
-});
-
-
-//
-// app.post('/api/mould-executed-pm', async (req, res) => {
-//     const { mouldName, instance, month } = req.body;
-
-//     try {
-//         await sql.connect(config);
-
-//         // Step 1: Retrieve MouldID from MouldName
-//         const mouldQuery = `SELECT MouldID FROM Config_Mould WHERE MouldName = @mouldName`;
-//         const mouldRequest = new sql.Request();
-//         mouldRequest.input('mouldName', sql.NVarChar, mouldName);
-//         const mouldResult = await mouldRequest.query(mouldQuery);
-
-//         if (mouldResult.recordset.length === 0) {
-//             return res.status(404).json({ error: "Mould not found" });
-//         }
-
-//         const mouldId = mouldResult.recordset[0].MouldID;
-
-//         // Step 2: Derive the startDate and endDate from the provided month
-//         const startDate = new Date(month);
-//         const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0, 23, 59, 59, 999); // Last day of the month
-
-//         // Step 3: Fetch Data from Mould_Executed_PMCheckPointHistory
-//         const pmHistoryQuery = `
-//             SELECT TOP (1000) [UID], [CheckListID], [CheckPointID], [CheckPointName], 
-//                 [CheckArea], [CheckPointItems], [CheckPointArea], [CheckingMethod], 
-//                 [JudgementCriteria], [CheckListType], [CheckPointType], [UOM], 
-//                 [UpperLimit], [LowerLimit], [Standard], [CheckPointValue], 
-//                 [OKNOK], [Observation], [Instance], [Timestamp]
-//             FROM [PPMS].[dbo].[Mould_Executed_PMCheckPointHistory]
-//             WHERE CheckListID IN (
-//                 SELECT CheckListID 
-//                 FROM [PPMS].[dbo].[Config_PMCheckList]
-//                 WHERE MouldID = @mouldId
-//             )
-//               AND Instance = @instance
-//               AND Timestamp >= @startDate
-//               AND Timestamp <= @endDate
-//         `;
-
-//         const pmHistoryRequest = new sql.Request();
-//         pmHistoryRequest.input('mouldId', sql.Int, mouldId);
-//         pmHistoryRequest.input('instance', sql.NVarChar, instance);
-//         pmHistoryRequest.input('startDate', sql.DateTime, startDate);
-//         pmHistoryRequest.input('endDate', sql.DateTime, endDate);
-
-//         const pmHistoryResult = await pmHistoryRequest.query(pmHistoryQuery);
-
-//         res.json(pmHistoryResult.recordset);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).json({ error: "Database error" });
-//     } finally {
-//         sql.close();
-//     }
-// });
-
-
 // Helper function to get the first and last date of a month
 function getMonthDateRange(month) {
     const months = {
@@ -351,87 +257,7 @@ function getMonthDateRange(month) {
     return { startDate, endDate };
 }
 
-// Fetch the PM Checkpoint history data
-// app.post('/api/mould-executed-pm', async (req, res) => {
-//     const { mouldName, instance, month } = req.body;
-
-//     try {
-//         await sql.connect(config);
-
-//         // Step 1: Retrieve MouldID from MouldName
-//         const mouldQuery = `SELECT MouldID FROM Config_Mould WHERE MouldName = @mouldName`;
-//         const mouldRequest = new sql.Request();
-//         mouldRequest.input('mouldName', sql.NVarChar, mouldName);
-//         const mouldResult = await mouldRequest.query(mouldQuery);
-
-//         if (mouldResult.recordset.length === 0) {
-//             return res.status(404).json({ error: "Mould not found" });
-//         }
-
-//         const mouldId = mouldResult.recordset[0].MouldID;
-
-//         // Step 2: Derive the startDate and endDate from the provided month
-//         const monthMap = {
-//             january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7,
-//             september: 8, october: 9, november: 10, december: 11
-//         };
-
-//         const monthLower = month.toLowerCase();
-//         const startDate = new Date(new Date().getFullYear(), monthMap[monthLower], 1);
-//         const endDate = new Date(new Date().getFullYear(), monthMap[monthLower] + 1, 0, 23, 59, 59, 999); // Last day of the month
-
-//         // Step 3: Fetch Data from Mould_Executed_PMCheckPointHistory
-//         const pmHistoryQuery = `
-//            SELECT 
-    
-//     history.CheckListID,
-//     checklist.CheckListName,   -- Added CheckListName from Config_PMCheckList
-//     history.CheckPointID,
-//     history.CheckPointName,
-//     history.CheckArea,
-//     history.CheckPointItems,
-//     history.CheckPointArea,
-//     history.CheckingMethod,
-//     history.JudgementCriteria,
-//     history.CheckListType,
-//     history.CheckPointType,
-//     history.UOM,
-//     history.UpperLimit,
-//     history.LowerLimit,
-//     history.Standard,
-//     history.CheckPointValue,
-//     history.OKNOK,
-//     history.Observation,
-//     history.Instance,
-//     history.Timestamp
-// FROM 
-//     [PPMS].[dbo].[Mould_Executed_PMCheckPointHistory] AS history
-// JOIN 
-//     [PPMS].[dbo].[Config_PMCheckList] AS checklist 
-//     ON history.CheckListID = checklist.CheckListID
-// WHERE 
-//     checklist.MouldID = @mouldId
-//     AND history.Instance = @instance
-//     AND history.Timestamp >= @startDate
-//     AND history.Timestamp <= @endDate;
-//         `;
-
-//         const pmHistoryRequest = new sql.Request();
-//         pmHistoryRequest.input('mouldId', sql.NVarChar, mouldId); // MouldID is treated as a string
-//         pmHistoryRequest.input('instance', sql.Int, instance); // Instance is an integer
-//         pmHistoryRequest.input('startDate', sql.DateTime, startDate);
-//         pmHistoryRequest.input('endDate', sql.DateTime, endDate);
-
-//         const pmHistoryResult = await pmHistoryRequest.query(pmHistoryQuery);
-
-//         res.json(pmHistoryResult.recordset);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).json({ error: "Database error" });
-//     } finally {
-//         //sql.close();
-//     }
-// });
+//Fetch Data from Mould_Executed_PMCheckPointHistory
 
 app.post('/api/mould-executed-pm', async (req, res) => {
     const { mouldName, instance } = req.body; // Removed startDate and endDate
@@ -568,76 +394,7 @@ WHERE
 
 
 
-//------------------to fetch the meta data
-
-// app.get('/api/getMetadata', async (req, res) => {
-//     const mouldName = req.query.mouldName;
-//     console.log(`Received mouldName: ${mouldName}`);  // Add this line for debugging
-
-//     try {
-//         await sql.connect(config);
-//         const result = await sql.query`
-//             SELECT 
-//                 m.MouldName, 
-//                 md.MetaDataName, 
-//                 md.MetaDataValue
-//             FROM 
-//                 Config_Mould m
-//             JOIN 
-//                 Config_PMCheckList c ON c.MouldID = m.MouldID
-//             JOIN 
-//                 Config_PMMetaData md ON md.CheckListID = c.CheckListID
-//             WHERE 
-//                 m.MouldName = ${mouldName}
-//         `;
-        
-//         if (result.recordset.length > 0) {
-//             res.json(result.recordset);
-//         } else {
-//             res.status(404).json({ message: 'No data found for this mould name.' });
-//         }
-//     } catch (err) {
-//         console.error('Error executing query:', err);
-//         res.status(500).json({ error: 'Database query failed' });
-//     }
-// });
-//----------------------1-------------
-// app.post('/api/getMetadata', async (req, res) => {
-//     const mouldName = req.body.mouldName?.trim(); // Safe access to avoid errors
-//     console.log(`Received mouldName: ${mouldName}`); // Debugging log
-
-//     if (!mouldName) {
-//         return res.status(400).json({ error: 'mouldName is required' });
-//     }
-
-//     try {
-//         await sql.connect(config);
-//         const result = await sql.query`
-//             SELECT 
-//                 m.MouldName, 
-//                 md.MetaDataName, 
-//                 md.MetaDataValue
-//             FROM 
-//                 Config_Mould m
-//             JOIN 
-//                 Config_PMCheckList c ON c.MouldID = m.MouldID
-//             JOIN 
-//                 Config_PMMetaData md ON md.CheckListID = c.CheckListID
-//             WHERE 
-//                 m.MouldName = ${mouldName}
-//         `;
-        
-//         if (result.recordset.length > 0) {
-//             res.json(result.recordset);
-//         } else {
-//             res.status(404).json({ message: 'No data found for this mould name.' });
-//         }
-//     } catch (err) {
-//         console.error('Error executing query:', err);
-//         res.status(500).json({ error: 'Database query failed' });
-//     }
-// });
-
+//------------------to fetch the meta data for PM Checkpoint Report
 
 app.post('/api/getMetadata', async (req, res) => {
     const mouldName = req.body.mouldName?.trim(); // Safe access to avoid errors
@@ -684,8 +441,52 @@ app.post('/api/getMetadata', async (req, res) => {
         res.status(500).json({ error: 'Database query failed' });
     }
 });
+//fetch the metadata from hc 
+app.post('/api/hcgetMetadata', async (req, res) => {
+    const mouldName = req.body.mouldName?.trim(); // Safe access to avoid errors
+    console.log(`Received mouldName: ${mouldName}`); // Debugging log
 
+    if (!mouldName) {
+        return res.status(400).json({ error: 'mouldName is required' });
+    }
 
+    try {
+        await sql.connect(config);
+        const result = await sql.query`
+            SELECT 
+                m.MouldName, 
+                md.MetaDataName, 
+                md.MetaDataValue
+            FROM 
+                Config_Mould m
+            JOIN 
+                Config_HCCheckList c ON c.MouldID = m.MouldID
+            JOIN 
+                Config_HCMetaData md ON md.CheckListID = c.CheckListID
+            WHERE 
+                m.MouldName = ${mouldName}
+        `;
+        
+        if (result.recordset.length > 0) {
+            // Restructure response to key-value format
+            const formattedData = result.recordset.reduce((acc, { MetaDataName, MetaDataValue }) => {
+                acc[MetaDataName] = MetaDataValue;
+                return acc;
+            }, {});
+            
+            // Log the formatted data for debugging
+            console.log('Formatted Response:', formattedData);
+
+            // Send the formatted response
+            res.json(formattedData);
+        } else {
+            res.status(404).json({ message: 'No data found for this mould name.' });
+        }
+    } catch (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Database query failed' });
+    }
+});
 
 
 
