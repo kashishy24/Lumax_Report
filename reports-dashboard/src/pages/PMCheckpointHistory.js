@@ -45,26 +45,7 @@ const PMCheckpointHistory = () => {
 
 
 
-  //
-  // const handleGenerateReport = () => {
-  //   if (!mouldName || !instanceNo || !startDate || !endDate) {
-  //     message.warning(
-  //       'Please select Mould Name, Instance No, Start Date, and End Date.'
-  //     );
-  //     return;
-  //   }
-   
 
-  //   axios
-  //     .post('http://localhost:5000/api/mould-executed-pm', {
-  //       mouldName,
-  //       instance: instanceNo,
-  //       startDate,
-  //       endDate,
-  //     })
-  //     .then((response) => setReportData(response.data))
-  //     .catch(() => message.error('Error fetching report data.'));
-  // };
 
 
 
@@ -137,7 +118,7 @@ const PMCheckpointHistory = () => {
       <Row
         gutter={16}
         justify="start"
-        style={{ marginBottom: '16px', gap: '16px', marginLeft: '2px' }}
+        style={{ marginBottom: '5px', gap: '16px', marginLeft: '-17px' ,marginTop:'-20px'}}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
@@ -181,14 +162,14 @@ const PMCheckpointHistory = () => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>
+          <label style={{ fontWeight: 'bold', marginRight: '4px' }}>
             Instance No
           </label>
           <Select
             placeholder="Select Instance No"
             onChange={(value) => setInstanceNo(value)}
             value={instanceNo}
-            style={{ width: '100px' }}
+            style={{ width: '70px' }}
             disabled={!instanceOptions.length}
           >
             {instanceOptions.map((option) => (
@@ -207,6 +188,8 @@ const PMCheckpointHistory = () => {
             padding: '4px 12px',
             height: '32px',
             lineHeight: '1',
+            width: '60px',
+            marginLeft: '-10px'
           }}
         >
           Generate
@@ -215,35 +198,32 @@ const PMCheckpointHistory = () => {
       <Row
         gutter={16}
         justify="start"
-        style={{ marginBottom: '16px', gap: '16px', marginLeft: '2px' }}
+        style={{ marginBottom: '5px', gap: '16px', marginLeft: '-17px' }}
       >
 
 
-        {/* <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Part Name</label>
-          <Input value={partName} style={{ width: '100px' }} readOnly />
-        </div> */}
+     
         <div style={{ display: 'flex', alignItems: 'center' }}>
         <div>
-          <label style={{ fontWeight: 'bold', marginRight: '8px' }}>Part Name</label>
-          <Input value={partName} placeholder="Part Name" readOnly style={{ width: '150px' }} />
+          <label style={{ marginRight: '8px' }}>Part Name</label>
+          <Input value={partName} placeholder="Part Name" readOnly style={{ width: '136px' }} />
         </div>
     </div>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{  marginRight: '8px', minWidth: '100px' }}>
+          <label style={{  marginRight: '-15px', minWidth: '100px' ,marginLeft:'-5px'}}>
             Model Code
           </label>
           <Input
             placeholder="Model Code"
             value={modelCode}
-            style={{ width: '100px' }}
+            style={{ width: '100px',marginLeft:'-3px' }}
             onChange={(e) => setModelCode(e.target.value)}
           />
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{marginRight: '8px', minWidth: '100px' }}>
+          <label style={{marginRight: '4px', minWidth: '100px', marginLeft:'-5px'}}>
             Customer Name
           </label>
           <Input
@@ -255,18 +235,18 @@ const PMCheckpointHistory = () => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px', marginLeft: '-4px'}}>
             Raw Material
           </label>
 
           <Input
             placeholder="Raw Material"
             value={rawMaterial}
-            style={{ width: '100px' }}
+            style={{ width: '148px' ,marginLeft: '-22px'}}
             onChange={(e) => setRawMaterial(e.target.value)}
           />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center',marginTop:'-12px' }}>
           <label style={{ marginRight: '8px', minWidth: '100px' }}>
             Part No
           </label>
@@ -274,12 +254,12 @@ const PMCheckpointHistory = () => {
           <Input
             placeholder="Part No"
             value={partNo}
-            style={{ width: '100px' }}
+            style={{ width: '80px' ,marginLeft:'-55px'}}
             onChange={(e) => setPartNo(e.target.value)}
           />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        {/* <div style={{ display: 'flex', alignItems: 'center' ,marginTop:'-25px' }}>
           <label style={{ marginRight: '8px', minWidth: '100px' }}>
             PM Frequency
           </label>
@@ -289,22 +269,22 @@ const PMCheckpointHistory = () => {
             value={pmFrequency}
             style={{ width: '50px' }}
             onChange={(e) => setPmFrequency(e.target.value)}
-          /></div>
+          /></div> */}
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{  marginRight: '8px', minWidth: '100px' }}>
-            No. of Shots
+        <div style={{ display: 'flex', alignItems: 'center',marginTop:'-12px'  }}>
+          <label style={{  marginRight: '8px', minWidth: '90px' ,marginLeft:'-4px'}}>
+            FrequencyCount
           </label>
           <Input
             placeholder="No. of Shots"
             value={noOfShots}
-            style={{ width: '50px' }}
+            style={{ width: '50px' ,marginLeft:'-2px'}}
             onChange={(e) => setNoOfShots(e.target.value)}
           />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{  marginRight: '8px', minWidth: '50px' }}>
-            Month
+        <div style={{ display: 'flex', alignItems: 'center' ,marginTop:'-12px' }}>
+          <label style={{  marginRight: '4px', minWidth: '50px' ,marginLeft:'-4px'}}>
+          FrequencyMonth
           </label>
           <Input
             placeholder="Month"
@@ -314,19 +294,29 @@ const PMCheckpointHistory = () => {
           />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+        <div style={{ display: 'flex', alignItems: 'center' ,marginTop:'-12px' }}>
+          <label style={{  minWidth: '100px',marginLeft:'-4px' }}>
             Gate Type
           </label>
           <Input
             placeholder="Gate Type"
             value={gateType}
-            style={{ width: '80px' }}
+            style={{ width: '80px',marginLeft:'-30px'}}
             onChange={(e) => setGateType(e.target.value)}
           />
         </div>
-
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+     <div style={{ marginTop:'-12px' }} >
+     <label style={{ marginLeft:'-4px' }}>
+            M/C Tonnage
+          </label>
+          <Input
+            placeholder="M/C Tonnage"
+            value={mcTonnage}
+            style={{ width: '80px',marginRight:'4px'}}
+            onChange={(e) => setMcTonnage(e.target.value)}
+          />
+     </div>
+        {/* <div style={{ display: 'flex', alignItems: 'center',marginTop:'-25px'  }}>
           <label style={{ marginRight: '8px', minWidth: '100px' }}>
             M/C Tonnage
           </label>
@@ -336,7 +326,7 @@ const PMCheckpointHistory = () => {
             style={{ width: '100px' }}
             onChange={(e) => setMcTonnage(e.target.value)}
           />
-        </div>
+        </div> */}
         {/* </div> */}
       </Row>
 
@@ -345,7 +335,8 @@ const PMCheckpointHistory = () => {
         style={{
           marginTop: '12px',
           maxWidth: '100%',
-          maxHeight: '450px',
+          maxHeight: '388px',
+          marginLeft: '-17px',
           overflowY: 'auto',
           border: '1px solid #ddd',
         }}
@@ -359,53 +350,53 @@ const PMCheckpointHistory = () => {
         >
           <thead>
             <tr style={{ backgroundColor: '#f5f5f5', textAlign: 'left' }}>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+              <th style={{ ...tableHeaderStyle, width: '100px',borderRight: '1px solid #ddd'}}>
                 CheckListName
               </th>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+              <th style={{ ...tableHeaderStyle, width: '100px' ,borderRight: '1px solid #ddd'}}>
                 CheckPointID
               </th>
-              <th style={{ ...tableHeaderStyle, width: '120px' }}>
+              <th style={{ ...tableHeaderStyle, width: '120px',borderRight: '1px solid #ddd' }}>
                 CheckPointName
               </th>
-              <th style={{ ...tableHeaderStyle, width: '80px' }}>
+              <th style={{ ...tableHeaderStyle, width: '80px' ,borderRight: '1px solid #ddd'}}>
                 CheckArea
               </th>
-              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+              <th style={{ ...tableHeaderStyle, width: '130px',borderRight: '1px solid #ddd' }}>
                 CheckPointItems
               </th>
-              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+              <th style={{ ...tableHeaderStyle, width: '130px',borderRight: '1px solid #ddd' }}>
                 CheckPointArea
               </th>
-              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+              <th style={{ ...tableHeaderStyle, width: '130px' ,borderRight: '1px solid #ddd'}}>
                 CheckingMethod
               </th>
-              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+              <th style={{ ...tableHeaderStyle, width: '130px',borderRight: '1px solid #ddd' }}>
                 JudgementCriteria
               </th>
-              <th style={{ ...tableHeaderStyle, width: '110px' }}>
+              <th style={{ ...tableHeaderStyle, width: '110px',borderRight: '1px solid #ddd' }}>
                 CheckListType
               </th>
-              <th style={{ ...tableHeaderStyle, width: '130px' }}>
+              <th style={{ ...tableHeaderStyle, width: '130px' ,borderRight: '1px solid #ddd'}}>
                 CheckPointType
               </th>
-              <th style={{ ...tableHeaderStyle, width: '70px' }}>UOM</th>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+              <th style={{ ...tableHeaderStyle, width: '70px' ,borderRight: '1px solid #ddd'}}>UOM</th>
+              <th style={{ ...tableHeaderStyle, width: '100px',borderRight: '1px solid #ddd' }}>
                 UpperLimit
               </th>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+              <th style={{ ...tableHeaderStyle, width: '100px',borderRight: '1px solid #ddd' }}>
                 LowerLimit
               </th>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>Standard</th>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+              <th style={{ ...tableHeaderStyle, width: '100px',borderRight: '1px solid #ddd' }}>Standard</th>
+              <th style={{ ...tableHeaderStyle, width: '100px' ,borderRight: '1px solid #ddd'}}>
                 CheckPointValue
               </th>
-              <th style={{ ...tableHeaderStyle, width: '70px' }}>OKNOK</th>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+              <th style={{ ...tableHeaderStyle, width: '70px',borderRight: '1px solid #ddd' }}>OKNOK</th>
+              <th style={{ ...tableHeaderStyle, width: '100px',borderRight: '1px solid #ddd' }}>
                 Observation
               </th>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>Instance</th>
-              <th style={{ ...tableHeaderStyle, width: '100px' }}>
+              <th style={{ ...tableHeaderStyle, width: '100px',borderRight: '1px solid #ddd' }}>Instance</th>
+              <th style={{ ...tableHeaderStyle, width: '100px', borderRight: '1px solid #ddd'}}>
                 Timestamp
               </th>
             </tr>
@@ -447,6 +438,12 @@ const tableHeaderStyle = {
   padding: '12px',
   textAlign: 'center',
   borderBottom: '2px solid #ddd',
+  backgroundColor: '#f5f5f5',
+        textAlign: 'left',
+        position: 'sticky',
+        top: 0,
+        zIndex: 2,
+        
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
