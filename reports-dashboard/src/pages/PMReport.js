@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, DatePicker, Button, message, Row } from 'antd';
+import { Select, DatePicker, Button, message, Row ,Input} from 'antd';
 
 const { Option } = Select;
 
@@ -114,6 +114,130 @@ const PMReport = () => {
         >
           Generate
         </Button>
+      </Row>
+
+      <Row
+        gutter={16}
+        justify="start"
+        style={{ marginBottom: '5px', gap: '16px', marginLeft: '-17px' }}
+      >
+
+
+     
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div>
+          <label style={{ marginRight: '8px' }}>Part Name</label>
+          <Input value={partName} placeholder="Part Name" readOnly style={{ width: '136px' }} />
+        </div>
+    </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{  marginRight: '-15px', minWidth: '100px' ,marginLeft:'-5px'}}>
+            Model Code
+          </label>
+          <Input
+            placeholder="Model Code"
+            value={modelCode}
+            style={{ width: '100px',marginLeft:'-3px' }}
+            onChange={(e) => setModelCode(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{marginRight: '4px', minWidth: '100px', marginLeft:'-5px'}}>
+            Customer Name
+          </label>
+          <Input
+            placeholder="Customer Name"
+            value={customerName}
+            style={{ width: '100px' }}
+            onChange={(e) => setCustomerName(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px', marginLeft: '-4px'}}>
+            Raw Material
+          </label>
+
+          <Input
+            placeholder="Raw Material"
+            value={rawMaterial}
+            style={{ width: '148px' ,marginLeft: '-22px'}}
+            onChange={(e) => setRawMaterial(e.target.value)}
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center',marginTop:'-12px' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+            Part No
+          </label>
+
+          <Input
+            placeholder="Part No"
+            value={partNo}
+            style={{ width: '80px' ,marginLeft:'-55px'}}
+            onChange={(e) => setPartNo(e.target.value)}
+          />
+        </div>
+
+        {/* <div style={{ display: 'flex', alignItems: 'center' ,marginTop:'-25px' }}>
+          <label style={{ marginRight: '8px', minWidth: '100px' }}>
+            PM Frequency
+          </label>
+
+          <Input
+            placeholder="PM Frequency"
+            value={pmFrequency}
+            style={{ width: '50px' }}
+            onChange={(e) => setPmFrequency(e.target.value)}
+          /></div> */}
+
+        <div style={{ display: 'flex', alignItems: 'center',marginTop:'-12px'  }}>
+          <label style={{  marginRight: '8px', minWidth: '90px' ,marginLeft:'-4px'}}>
+            FrequencyCount
+          </label>
+          <Input
+            placeholder="No. of Shots"
+            value={noOfShots}
+            style={{ width: '50px' ,marginLeft:'-2px'}}
+            onChange={(e) => setNoOfShots(e.target.value)}
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' ,marginTop:'-12px' }}>
+          <label style={{  marginRight: '4px', minWidth: '50px' ,marginLeft:'-4px'}}>
+          FrequencyMonth
+          </label>
+          <Input
+            placeholder="Month"
+            value={month}
+            style={{ width: '100px' }}
+            onChange={(e) => setMonth(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' ,marginTop:'-12px' }}>
+          <label style={{  minWidth: '100px',marginLeft:'-4px' }}>
+            Gate Type
+          </label>
+          <Input
+            placeholder="Gate Type"
+            value={gateType}
+            style={{ width: '80px',marginLeft:'-30px'}}
+            onChange={(e) => setGateType(e.target.value)}
+          />
+        </div>
+     <div style={{ marginTop:'-12px' }} >
+     <label style={{ marginLeft:'-4px' }}>
+            M/C Tonnage
+          </label>
+          <Input
+            placeholder="M/C Tonnage"
+            value={mcTonnage}
+            style={{ width: '80px',marginRight:'4px'}}
+            onChange={(e) => setMcTonnage(e.target.value)}
+          />
+     </div>
+       
       </Row>
 
       {/* Report Data Table with scrollable container */}
